@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Photon.Pun;
+using Photon.Realtime;
 
 public class PlayerController : MonoBehaviour
 {
@@ -28,6 +30,11 @@ public class PlayerController : MonoBehaviour
     GameObject nearObj;
     private JoyStick _joyStick;
 
+    /// <summary>
+    /// Photon Settings
+    /// </summary>
+    public PhotonView _pv;
+
     [Header("PlayerState")]
 
     [SerializeField] private float _speed = 10f;
@@ -45,12 +52,15 @@ public class PlayerController : MonoBehaviour
     }
     void Update()
     {
-        PlayerInput();
+        if (_pv.IsMine)
+        {
+            PlayerInput();
 
-        PlayerMove();
-        PlayerTurn();
-        PlayerJump();
-        PlayerDash();
+            PlayerMove();
+            PlayerTurn();
+            PlayerJump();
+            PlayerDash();
+        }
     }
 
     // 키 입력 함수
@@ -66,12 +76,12 @@ public class PlayerController : MonoBehaviour
         _playerWalk = Input.GetKeyDown(KeyCode.LeftControl);
         _playerJump = Input.GetKeyDown(KeyCode.Space);
         _playerDash = Input.GetKeyDown(KeyCode.LeftShift);
-
     }
 
 
     #region Player 이동 관련
     // 플레이어 이동 함수
+    [PunRPC]
     public void PlayerMove()
     {
         _moveVec = new Vector3(_horizentalAxis, 0, _verticalAxis).normalized;
@@ -98,6 +108,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 플레이어 시점 함수
+    [PunRPC]
     void PlayerTurn()
     {
         // 이동 방향 카메라 시점
@@ -105,6 +116,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // 플레이어 점프 함수
+    [PunRPC]
     void PlayerJump()
     {
         if (_playerJump && _isJump == false && _moveVec == Vector3.zero && _isDash == false)
@@ -115,6 +127,7 @@ public class PlayerController : MonoBehaviour
         }
     }
     // 플레이어 회피 함수
+    [PunRPC]
     void PlayerDash()
     {
         //if (playerJump && isJump == false && moveVec != Vector3.zero && isDash == false)
@@ -133,6 +146,7 @@ public class PlayerController : MonoBehaviour
     }
 
     // PlayerDash에서 사용 중
+    [PunRPC]
     void PlayerDashEnd()
     {
         // 원래 속도로 돌아오게함
