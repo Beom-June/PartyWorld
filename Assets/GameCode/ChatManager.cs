@@ -15,8 +15,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
     //[SerializeField] private Text WelcomeText;
     //List<RoomInfo> myList = new List<RoomInfo>();
 
-    [SerializeField] private Text ListText;
-    [SerializeField] private Text RoomInfoText;
+    //[SerializeField] private Text ListText;
+    //[SerializeField] private Text RoomInfoText;
     [SerializeField] private Text[] _chatText;
     [SerializeField] private InputField _chatInput;
 
@@ -61,22 +61,22 @@ public class ChatManager : MonoBehaviourPunCallbacks
     #region 디버그용 방 접속 확인
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        RoomRenewal();
+        //RoomRenewal();
         ChatRPC("<color=yellow>" + newPlayer.NickName + "님이 참가하셨습니다</color>");
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        RoomRenewal();
+        //RoomRenewal();
         ChatRPC("<color=yellow>" + otherPlayer.NickName + "님이 퇴장하셨습니다</color>");
     }
-    void RoomRenewal()
-    {
-        ListText.text = "";
-        for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-            ListText.text += PhotonNetwork.PlayerList[i].NickName + ((i + 1 == PhotonNetwork.PlayerList.Length) ? "" : ", ");
-        RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + PhotonNetwork.CurrentRoom.PlayerCount + "명 / " + PhotonNetwork.CurrentRoom.MaxPlayers + "최대";
-    }
+    //void RoomRenewal()
+    //{
+    //    ListText.text = "";
+    //    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
+    //        ListText.text += PhotonNetwork.PlayerList[i].NickName + ((i + 1 == PhotonNetwork.PlayerList.Length) ? "" : ", ");
+    //    RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + PhotonNetwork.CurrentRoom.PlayerCount + "명 / " + PhotonNetwork.CurrentRoom.MaxPlayers + "최대";
+    //}
     #endregion
 
     #region 채팅
