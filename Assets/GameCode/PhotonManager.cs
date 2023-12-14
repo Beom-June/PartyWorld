@@ -14,7 +14,12 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         PhotonNetwork.AutomaticallySyncScene = true;                                //  같은 룸의 유저들에게 자동으로 씬을 로딩
         PhotonNetwork.GameVersion = _version;                                       //  같은 버전의 유저끼리 접속 허용
         PhotonNetwork.NickName = _userId;                                           //  유저 아이디 할당
+
+        // SendRate 및 SerializationRate 설정
+        PhotonNetwork.SendRate = 60; // 초당 전송되는 네트워크 패킷의 수
+        PhotonNetwork.SerializationRate = 60; // 초당 전송되는 시리얼라이즈된 패킷의 수
         Debug.Log(PhotonNetwork.SendRate);                                          //  통신 횟수 설정
+
         PhotonNetwork.ConnectUsingSettings();                                       //  서버 접속
     }
 
@@ -66,6 +71,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         {
             Debug.Log($"{_player.Value.NickName}, {_player.Value.ActorNumber}");
         }
+
+        // Player 소환
+        Spawn();
+    }
+
+    // Player 소환하는 함수
+    public void Spawn()
+    {
+        PhotonNetwork.Instantiate("Player", Vector3.zero, Quaternion.identity);
     }
 
     //public override void OnJoinedRoom()

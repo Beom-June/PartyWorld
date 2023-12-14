@@ -27,7 +27,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
     #region 서버연결
     void Awake()
     {
-    //=> Screen.SetResolution(960, 540, false);
+        //=> Screen.SetResolution(960, 540, false);
+        PhotonNetwork.ConnectUsingSettings();
     }
 
     void Update()
@@ -38,7 +39,11 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
     public void Connect() => PhotonNetwork.ConnectUsingSettings();
 
-    public override void OnConnectedToMaster() => PhotonNetwork.JoinLobby();
+    public override void OnConnectedToMaster()
+    {
+    //=> PhotonNetwork.JoinLobby();
+        PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 4 }, null);
+    }
 
     public override void OnJoinedLobby()
     {
@@ -49,6 +54,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
         //myList.Clear();
     }
 
+    // 포톤 끊기면
     public void Disconnect() => PhotonNetwork.Disconnect();
 
     public override void OnDisconnected(DisconnectCause cause)
@@ -82,8 +88,19 @@ public class ChatManager : MonoBehaviourPunCallbacks
     #region 채팅
     public void Send()
     {
-        _pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + _chatInput.text);
-        _chatInput.text = "";
+        //_pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + _chatInput.text);
+        //_chatInput.text = "";
+
+        string message = _chatInput.text;
+        if (!string.IsNullOrEmpty(message) && PhotonNetwork.InRoom)
+        {
+            _pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + message);
+            _chatInput.text = "";
+        }
+        else
+        {
+            Debug.LogError("Cannot send empty message or not in a room.");
+        }
     }
 
     // RPC는 플레이어가 속해있는 방 모든 인원에게 전달한다
@@ -92,15 +109,20 @@ public class ChatManager : MonoBehaviourPunCallbacks
     {
         bool _isInput = false;
         for (int i = 0; i < _chatText.Length; i++)
+        {
             if (_chatText[i].text == "")
             {
                 _isInput = true;
                 _chatText[i].text = msg;
                 break;
             }
+        }
         if (!_isInput) // 꽉차면 한칸씩 위로 올림
         {
-            for (int i = 1; i < _chatText.Length; i++) _chatText[i - 1].text = _chatText[i].text;
+            for (int i = 1; i < _chatText.Length; i++)
+            {
+                _chatText[i - 1].text = _chatText[i].text;
+            }
             _chatText[_chatText.Length - 1].text = msg;
         }
     }
