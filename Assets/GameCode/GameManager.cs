@@ -53,7 +53,7 @@ public class GameManager : MonoBehaviour
         }
         else if (newGameState == GameState.Playing)
         {
-
+             
         }
         else if (newGameState == GameState.GameOver)
         {
