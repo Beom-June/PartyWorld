@@ -16,7 +16,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     bool _playerJump;                            // 플레이어 점프 bool 값
     bool _playerDash;                            // 플레이어 회피 bool 값
 
-    bool _isJump;                                // 플레이어 점프 제어 bool 값
+    bool _isJump;                                // 플레이어  점프 제어 bool 값
     bool _isDash;                                // 플레이어 회피 제어 bool 값
     bool _isAttackReady;                         // 플레이어 공격 준비 bool 값
 
@@ -49,10 +49,14 @@ public class PlayerController : MonoBehaviour, IPunObservable
     void Start()
     {
         _joyStick = GameObject.Find("BackGround_JoyStick").GetComponent<JoyStick>();
+
+        // GameManager 상태 변화 이벤트 구독
+        GameManager.gameManager.OnGameStateChange += OnGameStateChange;
     }
     void Update()
     {
-        if (_pv.IsMine)
+        //if (_pv.IsMine)
+        if (_pv.IsMine && GameManager.gameManager.currentGameState == GameState.Playing)
         {
             PlayerInput();
 
@@ -62,6 +66,12 @@ public class PlayerController : MonoBehaviour, IPunObservable
             PlayerDash();
         }
     }
+    void OnDestroy()
+    {
+        // GameManager의 상태 변경 이벤트 구독 해제
+        GameManager.gameManager.OnGameStateChange -= OnGameStateChange;
+    }
+
 
     // 키 입력 함수
     void PlayerInput()
@@ -176,6 +186,24 @@ public class PlayerController : MonoBehaviour, IPunObservable
             // 수신 측에서 트랜스폼 정보를 받아 업데이트
             transform.position = (Vector3)stream.ReceiveNext();
             transform.rotation = (Quaternion)stream.ReceiveNext();
+        }
+    }
+    // 게임 상태 변경을 처리하는 콜백
+    void OnGameStateChange(GameState newGameState)
+    {
+        Debug.Log("PlayerController: GameState가 " + newGameState + "로 변경되었습니다.");
+
+        if (newGameState == GameState.GameOver)
+        {
+            // 게임 오버 상태 처리, 예: 플레이어 컨트롤 비활성화
+            _speed = 0;
+            Debug.Log("PlayerController: 게임 오버 - 플레이어 이동 멈춤");
+        }
+        else if (newGameState == GameState.Playing)
+        {
+            // 플레이어 컨트롤 다시 활성화
+            _speed = 10f;
+            Debug.Log("PlayerController: 게임 시작 - 플레이어 이동 가능");
         }
     }
 }

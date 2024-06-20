@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public enum GameState
 {
@@ -14,7 +15,8 @@ public class GameManager : MonoBehaviour
     public static GameManager gameManager;
     public GameState currentGameState = GameState.Menu;
 
-    public static int Stage;                        // static으로 전역에서 할 수 있게                                    // 게임 스테이지
+    public static int Stage;                        // static으로 전역에서 할 수 있게, 게임 스테이지
+    public event Action<GameState> OnGameStateChange;   //  옵저버 패턴 사용 event 
 
     private void Awake()
     {
@@ -38,7 +40,7 @@ public class GameManager : MonoBehaviour
     }
     public void GameOver()
     {
-
+        SetGameState(GameState.GameOver);
     }
 
     void SetGameState(GameState newGameState)
@@ -60,6 +62,6 @@ public class GameManager : MonoBehaviour
 
         }
         currentGameState = newGameState;
+        OnGameStateChange?.Invoke(newGameState);
     }
-
 }
