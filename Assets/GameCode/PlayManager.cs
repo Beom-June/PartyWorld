@@ -2,12 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PlayManager : MonoBehaviour
 {
     [SerializeField] private List<int> _sceneIdx;  // 씬 인덱스를 담는 리스트
     [SerializeField] private string _sceneName;        // 현재 씬 이름
 
+    [SerializeField] private GameObject _checking;
     void Awake()
     {
         // 빌드 설정에 있는 모든 씬 인덱스를 자동으로 가져옴
@@ -17,8 +19,22 @@ public class PlayManager : MonoBehaviour
             _sceneIdx.Add(i);
         }
     }
-    // 버튼 UI에서 사용하기 위한 함수
+
     public void PlayButton()
+    {
+        _checking.SetActive(true);
+    }
+    //  PlayButton. Loading Scene or Loading UI 뜨게 함 (고민)
+    public void YesButton()
+    {
+        SceneManager.LoadScene("Scene_Loading");
+    }
+    public void NoButton()
+    {
+        _checking.SetActive(false);
+    }
+    // Play Button. 씬 랜덤으로 보냄
+    public void GoToRandomScene()
     {
         //  Scene Null 이면 Return
         if (_sceneIdx.Count == 0)

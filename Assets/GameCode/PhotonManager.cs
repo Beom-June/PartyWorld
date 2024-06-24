@@ -18,7 +18,7 @@ public class PhotonManager : MonoBehaviourPunCallbacks
         // SendRate 및 SerializationRate 설정
         PhotonNetwork.SendRate = 60; // 초당 전송되는 네트워크 패킷의 수
         PhotonNetwork.SerializationRate = 60; // 초당 전송되는 시리얼라이즈된 패킷의 수
-        Debug.Log(PhotonNetwork.SendRate);                                          //  통신 횟수 설정
+        Debug.Log("SendRate : " + PhotonNetwork.SendRate);                                          //  통신 횟수 설정
 
         PhotonNetwork.ConnectUsingSettings();                                       //  서버 접속
     }
@@ -87,4 +87,15 @@ public class PhotonManager : MonoBehaviourPunCallbacks
     //    PhotonNetwork.Instantiate("GenJiBoy", Vector3.zero, Quaternion.identity, 0);
 
     //}
+    public void StartGame()
+    {
+        Debug.Log("PhotonManager에서 게임 시작 처리");
+        // 게임 시작 시 처리할 로직 추가
+    }
+
+    public void EndGame()
+    {
+        Debug.Log("PhotonManager에서 게임 오버 처리");
+        // 게임 오버 시 처리할 로직 추가
+    }
 }

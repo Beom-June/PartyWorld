@@ -51,12 +51,12 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _joyStick = GameObject.Find("BackGround_JoyStick").GetComponent<JoyStick>();
 
         // GameManager 상태 변화 이벤트 구독
-        GameManager.gameManager.OnGameStateChange += OnGameStateChange;
+        GameManager._gameManager._onGameStateChange += OnGameStateChange;
     }
     void Update()
     {
         //if (_pv.IsMine)
-        if (_pv.IsMine && GameManager.gameManager.currentGameState == GameState.Playing)
+        if (_pv.IsMine && GameManager._gameManager._currentGameState == GameState.Playing)
         {
             PlayerInput();
 
@@ -69,7 +69,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     void OnDestroy()
     {
         // GameManager의 상태 변경 이벤트 구독 해제
-        GameManager.gameManager.OnGameStateChange -= OnGameStateChange;
+        GameManager._gameManager._onGameStateChange -= OnGameStateChange;
     }
 
 

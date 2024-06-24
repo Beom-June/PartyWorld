@@ -91,10 +91,10 @@ public class ChatManager : MonoBehaviourPunCallbacks
         //_pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + _chatInput.text);
         //_chatInput.text = "";
 
-        string message = _chatInput.text;
-        if (!string.IsNullOrEmpty(message) && PhotonNetwork.InRoom)
+        string _message = _chatInput.text;
+        if (!string.IsNullOrEmpty(_message) && PhotonNetwork.InRoom)
         {
-            _pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + message);
+            _pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + _message);
             _chatInput.text = "";
         }
         else
@@ -127,4 +127,23 @@ public class ChatManager : MonoBehaviourPunCallbacks
         }
     }
     #endregion
+
+    // GameManager에서 호출하는 이벤트 핸들러
+    public void OnGameStateChange(GameState newGameState)
+    {
+        // 예시: 게임 상태에 따른 채팅창에 메시지 출력
+        if (newGameState == GameState.Playing)
+        {
+            SendSystemMessage(" *** Game Start *** ");
+        }
+        else if (newGameState == GameState.GameOver)
+        {
+            SendSystemMessage(" *** Game Over *** ");
+        }
+    }
+
+    private void SendSystemMessage(string message)
+    {
+        _pv.RPC("ChatRPC", RpcTarget.All, "<color=red>" + message + "</color>");
+    }
 }
