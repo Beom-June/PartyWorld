@@ -285,7 +285,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 747804304}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LogInSystem, Assembly-CSharp
         m_MethodName: LogIn
         m_Mode: 1
@@ -462,7 +462,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 747804304}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LogInSystem, Assembly-CSharp
         m_MethodName: Create
         m_Mode: 1
@@ -1097,12 +1097,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 747804302}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 746d6177d3532c34f9ce764b036256aa, type: 3}
+  m_Script: {fileID: 11500000, guid: 46f41c7486dad6c4cb7b35599aac86af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   _email: {fileID: 801744319}
   _password: {fileID: 703465385}
-  _outputText: {fileID: 2017282769}
+  _outputTxt: {fileID: 2017282769}
 --- !u!1 &801744317
 GameObject:
   m_ObjectHideFlags: 0
@@ -1768,7 +1768,7 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 747804304}
+      - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: LogInSystem, Assembly-CSharp
         m_MethodName: LogOut
         m_Mode: 1
