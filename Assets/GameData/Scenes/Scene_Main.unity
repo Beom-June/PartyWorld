@@ -2486,7 +2486,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _currentGameState: 0
-  _chatBool: 0
+  _ischatMgrCheck: 0
 --- !u!4 &1734694140
 Transform:
   m_ObjectHideFlags: 0
@@ -6570,6 +6570,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4fc59114d8b5586489be7aff7c552f07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _playerJump: 0
+  _isJump: 0
   _pv: {fileID: 4827948848203112479}
   _speed: 5
 --- !u!136 &4827948848203112476
@@ -6581,7 +6583,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 4778541443991325419}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 0
+  m_Enabled: 1
   m_Radius: 0.2
   m_Height: 0.55
   m_Direction: 1

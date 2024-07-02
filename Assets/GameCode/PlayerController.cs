@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Photon.Pun;
+using UnityEngine.AI;
 using Photon.Realtime;
 
 public class PlayerController : MonoBehaviour, IPunObservable
@@ -13,12 +14,11 @@ public class PlayerController : MonoBehaviour, IPunObservable
     float _verticalAxis;
 
     bool _playerWalk;                            // 플레이어 걷기 bool 값
-    bool _playerJump;                            // 플레이어 점프 bool 값
+    [SerializeField] private bool _playerJump;                            // 플레이어 점프 bool 값
     bool _playerDash;                            // 플레이어 회피 bool 값
 
-    bool _isJump;                                // 플레이어  점프 제어 bool 값
+    [SerializeField] private bool _isJump;                                // 플레이어  점프 제어 bool 값
     bool _isDash;                                // 플레이어 회피 제어 bool 값
-    bool _isAttackReady;                         // 플레이어 공격 준비 bool 값
 
     /// <summary>
     /// Component
@@ -27,8 +27,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
     Vector3 _dashVec;                                  // 회피시 방향이 전환되지 않도록 제한
     Rigidbody _playerRigidbody;
     Animator _animator;
-    GameObject nearObj;
+
     private JoyStick _joyStick;
+    private NavMeshAgent _navMeshAgent;
 
     /// <summary>
     /// Photon Settings
@@ -45,6 +46,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     {
         _animator = GetComponentInChildren<Animator>();
         _playerRigidbody = GetComponent<Rigidbody>();
+        _navMeshAgent = GetComponent<NavMeshAgent>();
     }
     void Start()
     {
@@ -64,6 +66,9 @@ public class PlayerController : MonoBehaviour, IPunObservable
             PlayerTurn();
             PlayerJump();
             PlayerDash();
+
+            // NavMeshAgent 상태 체크
+            CheckIfOnGround();
         }
     }
     void OnDestroy()
@@ -129,7 +134,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [PunRPC]
     void PlayerJump()
     {
-        if (_playerJump && _isJump == false && _moveVec == Vector3.zero && _isDash == false)
+        if (_playerJump && !_isJump && _moveVec == Vector3.zero && !_isDash)
         {
             _playerRigidbody.AddForce(Vector3.up * 5, ForceMode.Impulse);
             _animator.SetTrigger("doJump");
@@ -141,7 +146,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
     void PlayerDash()
     {
         //if (playerJump && isJump == false && moveVec != Vector3.zero && isDash == false)
-        if (_playerDash && _isJump == false && _moveVec != Vector3.zero && _isDash == false)
+        if (_playerDash && !_isJump && _moveVec != Vector3.zero && !_isDash)
         {
             _dashVec = _moveVec;
             _speed *= 2;
@@ -164,6 +169,14 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _isDash = false;
     }
     #endregion
+    // 바닥에 닿아 있는지 확인하는 함수
+    void CheckIfOnGround()
+    {
+        if (_navMeshAgent.isOnNavMesh && !_navMeshAgent.isOnOffMeshLink)
+        {
+            _isJump = false;
+        }
+    }
 
     void OnCollisionEnter(Collision collision)
     {
@@ -175,7 +188,7 @@ public class PlayerController : MonoBehaviour, IPunObservable
 
     public void OnPhotonSerializeView(PhotonStream stream, PhotonMessageInfo info)
     {
-        if(stream.IsWriting)
+        if (stream.IsWriting)
         {
             // 트랜스폼 정보를 전송
             stream.SendNext(transform.position);

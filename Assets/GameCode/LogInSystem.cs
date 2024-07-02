@@ -2,7 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using Firebase.Auth;
+
 
 public class LogInSystem : MonoBehaviour
 {
@@ -22,6 +24,11 @@ public class LogInSystem : MonoBehaviour
         _outputTxt.text = sign ? " *** 로그인 *** " : " *** 로그아웃 *** ";
         _outputTxt.text += FirebaseAuthManager.Instance._userId;
 
+        if (sign)
+        {
+            // 로그인 상태일 경우 원하는 씬으로 이동
+            SceneManager.LoadScene("Scene_Lobby");
+        }
     }
 
     public void Create()
@@ -30,6 +37,8 @@ public class LogInSystem : MonoBehaviour
         string _p = _password.text;
 
         FirebaseAuthManager.Instance.Create(_e, _p);
+
+        //  Create 실패시 띄우는 UI   -> 추후 제작
     }
     public void LogIn()
     {
