@@ -10,26 +10,25 @@ public class PlayerController : MonoBehaviour, IPunObservable
     /// <summary>
     /// Funtion
     /// </summary>
-    float _horizentalAxis;
-    float _verticalAxis;
+    private float _horizentalAxis;
+    private float _verticalAxis;
 
-    bool _playerWalk;                            // 플레이어 걷기 bool 값
-    [SerializeField] private bool _playerJump;                            // 플레이어 점프 bool 값
-    bool _playerDash;                            // 플레이어 회피 bool 값
-
-    [SerializeField] private bool _isJump;                                // 플레이어  점프 제어 bool 값
-    bool _isDash;                                // 플레이어 회피 제어 bool 값
+    [SerializeField] private bool _playerJump;           // 플레이어 점프 bool 값
+    [SerializeField] private bool _playerDash;                            // 플레이어 회피 bool 값
+    [SerializeField] private bool _isJump;               // 플레이어  점프 제어 bool 값
+    [SerializeField] private bool _isDash;                                // 플레이어 회피 제어 bool 값
+    [SerializeField] private float _jumpPower = 20.0f;
 
     /// <summary>
     /// Component
     /// </summary>
-    Vector3 _moveVec;
-    Vector3 _dashVec;                                  // 회피시 방향이 전환되지 않도록 제한
-    Rigidbody _playerRigidbody;
-    Animator _animator;
+    private Vector3 _moveVec;
+    private Vector3 _dashVec;                                  // 회피시 방향이 전환되지 않도록 제한
+    private Rigidbody _playerRigidbody;
+    private Animator _animator;
+    private NavMeshAgent _navMeshAgent;
 
     private JoyStick _joyStick;
-    private NavMeshAgent _navMeshAgent;
 
     /// <summary>
     /// Photon Settings
@@ -37,16 +36,15 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public PhotonView _pv;
 
     [Header("PlayerState")]
-
     [SerializeField] private float _speed = 10f;
     //[SerializeField] VirtualJoyStick virtualJoyStick;
-
 
     void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
         _playerRigidbody = GetComponent<Rigidbody>();
         _navMeshAgent = GetComponent<NavMeshAgent>();
+
     }
     void Start()
     {
@@ -68,13 +66,14 @@ public class PlayerController : MonoBehaviour, IPunObservable
             PlayerDash();
 
             // NavMeshAgent 상태 체크
-            CheckIfOnGround();
+            //CheckIfOnGround();
         }
     }
     void OnDestroy()
     {
         // GameManager의 상태 변경 이벤트 구독 해제
         GameManager._gameManager._onGameStateChange -= OnGameStateChange;
+        Debug.Log(" *** GameManager 구독 해제 *** ");
     }
 
 
@@ -88,7 +87,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _horizentalAxis = _joyStick.inputHorizontal();
         _verticalAxis = _joyStick.inputVertical();
 
-        _playerWalk = Input.GetKeyDown(KeyCode.LeftControl);
         _playerJump = Input.GetKeyDown(KeyCode.Space);
         _playerDash = Input.GetKeyDown(KeyCode.LeftShift);
     }
@@ -100,26 +98,20 @@ public class PlayerController : MonoBehaviour, IPunObservable
     public void PlayerMove()
     {
         _moveVec = new Vector3(_horizentalAxis, 0, _verticalAxis).normalized;
-
         if (_isDash)
         {
             // 회피 방향이랑 가는 방향이랑 같게
             _moveVec = _dashVec;
         }
-        if (_playerWalk)
-        {
-            //transform.position += _moveVec * _speed * 0.3f * Time.deltaTime;
-            _playerRigidbody.velocity = _moveVec * _speed * 0.3f;
-        }
-        else
-        {
-            //transform.position += _moveVec * _speed * Time.deltaTime;
-            _playerRigidbody.velocity = _moveVec * _speed;
-        }
-        //transform.position += moveVec * Speed * (WalkDown ? 0.3f : 1f) * Time.deltaTime;
-        _animator.SetBool("isMove", _moveVec != Vector3.zero);
-        _animator.SetBool("isWalk", _playerWalk);
 
+        // 목표 속도 설정
+        Vector3 _targetVelocity = _moveVec * _speed;
+        _targetVelocity.y = _playerRigidbody.velocity.y; // y축 속도는 점프 등으로 인한 변화를 유지
+
+        // 리지드바디의 속도를 직접 설정
+        _playerRigidbody.velocity = _targetVelocity;
+
+        _animator.SetBool("isMove", _moveVec != Vector3.zero);
     }
 
     // 플레이어 시점 함수
@@ -134,13 +126,20 @@ public class PlayerController : MonoBehaviour, IPunObservable
     [PunRPC]
     void PlayerJump()
     {
-        if (_playerJump && !_isJump && _moveVec == Vector3.zero && !_isDash)
+        if (_playerJump && !_isJump && !_isDash)
         {
-            _playerRigidbody.AddForce(Vector3.up * 5, ForceMode.Impulse);
+            _navMeshAgent.enabled = false; // NavMeshAgent 비활성화
+
+            // 현재 속도를 가져와서 y축 속도를 점프 파워로 설정
+            Vector3 _newVelocity = _playerRigidbody.velocity;
+            _newVelocity.y = _jumpPower;
+            _playerRigidbody.velocity = _newVelocity;
+
             _animator.SetTrigger("doJump");
             _isJump = true;
         }
     }
+
     // 플레이어 회피 함수
     [PunRPC]
     void PlayerDash()
@@ -169,20 +168,15 @@ public class PlayerController : MonoBehaviour, IPunObservable
         _isDash = false;
     }
     #endregion
-    // 바닥에 닿아 있는지 확인하는 함수
-    void CheckIfOnGround()
-    {
-        if (_navMeshAgent.isOnNavMesh && !_navMeshAgent.isOnOffMeshLink)
-        {
-            _isJump = false;
-        }
-    }
 
     void OnCollisionEnter(Collision collision)
     {
         if (collision.gameObject.tag == "Floor")
         {
+            _isJump = false; // 지면에 닿으면 점프 상태 해제
             _isDash = false;
+            _navMeshAgent.enabled = true;
+            Debug.Log("Player landed");
         }
     }
 
