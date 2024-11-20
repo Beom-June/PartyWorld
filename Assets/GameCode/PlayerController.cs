@@ -64,9 +64,6 @@ public class PlayerController : MonoBehaviour, IPunObservable
             PlayerTurn();
             PlayerJump();
             PlayerDash();
-
-            // NavMeshAgent 상태 체크
-            //CheckIfOnGround();
         }
     }
     void OnDestroy()
