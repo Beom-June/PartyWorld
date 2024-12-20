@@ -15,16 +15,14 @@ MonoBehaviour:
   version: 5
 --- !u!21 &2100000
 Material:
-  serializedVersion: 8
+  serializedVersion: 6
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Emission_Propeller_Arrow
   m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ValidKeywords:
-  - _EMISSION
-  m_InvalidKeywords: []
+  m_ShaderKeywords: _EMISSION
   m_LightmapFlags: 2
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -114,7 +112,7 @@ Material:
     - _GlossMapScale: 1
     - _Glossiness: 0.4472136
     - _GlossyReflections: 1
-    - _Metallic: 0
+    - _Metallic: 1
     - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
@@ -135,6 +133,6 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Emission1: {r: 0.9851055, g: 1, b: 0, a: 0}
     - _Emission2: {r: 1, g: 0.41783398, b: 0, a: 0}
-    - _EmissionColor: {r: 25.688938, g: 25.688938, b: 25.688938, a: 1}
+    - _EmissionColor: {r: 1024, g: 0, b: 874.1992, a: 1}
     - _SpecColor: {r: 0.2, g: 0.2, b: 0.2, a: 1}
   m_BuildTextureStacks: []
