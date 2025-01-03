@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Firebase.Auth;
+using Photon.Pun;
+using Photon.Realtime;
 
 
 public class LogInSystem : MonoBehaviour
@@ -26,8 +28,12 @@ public class LogInSystem : MonoBehaviour
 
         if (sign)
         {
-            // 로그인 상태일 경우 원하는 씬으로 이동
+            // 로그인 상태일 경우 Photon 서버에 연결
+            PhotonNetwork.ConnectUsingSettings();
+
+            // 원하는 씬으로 이동
             SceneManager.LoadScene("Scene_Lobby");
+            PhotonNetwork.JoinLobby();           // 로비 입장 (여기가 문제 였나봄, 바로 로비로 접속)
         }
     }
 

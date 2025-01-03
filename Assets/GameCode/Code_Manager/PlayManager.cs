@@ -10,6 +10,10 @@ public class PlayManager : MonoBehaviour
     [SerializeField] private string _sceneName;        // 현재 씬 이름
 
     [SerializeField] private GameObject _checking;
+
+    [Header("User Info")]
+    [SerializeField] private string _userId;        //  FireBase의 userID를 가져옴
+
     void Awake()
     {
         // 빌드 설정에 있는 모든 씬 인덱스를 자동으로 가져옴
@@ -18,6 +22,9 @@ public class PlayManager : MonoBehaviour
         {
             _sceneIdx.Add(i);
         }
+
+        //  userID 호출
+        _userId = FirebaseAuthManager.Instance._userEmail;
     }
 
     public void PlayButton()

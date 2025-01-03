@@ -26,6 +26,7 @@ public class FirebaseAuthManager
     private FirebaseUser _user;     //  인증이 완료된 유저 정보
 
     public string _userId => _user.UserId;
+    public string _userEmail => _user.Email;
 
     public Action<bool> _loginState;
     //[SerializeField] private InputField _email;
