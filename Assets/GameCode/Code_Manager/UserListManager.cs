@@ -10,45 +10,48 @@ public class UserListManager : MonoBehaviourPunCallbacks
     [SerializeField] private List<string> _userEmails = new List<string>(); // 접속한 유저 이메일 리스트
     void Start()
     {
-        CheckingUser();
+        PhotonNetwork.IsMessageQueueRunning = true;
     }
 
-
-    void CheckingUser()
+    #region Photon 콜백 처리
+    public override void OnJoinedRoom()
     {
-        // 예제 유저 이메일 추가 (Firebase Auth에서 가져온다 가정)
-        _userEmails.Add(FirebaseAuthManager.Instance._userEmail); // 현재 유저 이메일 추가
+        // 첫 번째 플레이어 포함, 현재 방에 있는 모든 플레이어 정보 초기화
+        Debug.Log("Joined the room. Updating player list...");
+        ListUpdate();
+    }
 
-        // 예제: 다른 유저 이메일 추가 (데모용)
-        _userEmails.Add("example1@gmail.com");
-        _userEmails.Add("example2@gmail.com");
+    public override void OnPlayerEnteredRoom(Player newPlayer)
+    {
+        ListUpdate();
+    }
+    // 플레이어가 나갔을 때
+    public override void OnPlayerLeftRoom(Player otherPlayer)
+    {
+        ListUpdate();
+    }
+    #endregion
 
-        // 유저 리스트를 텍스트 배열에 출력
+    void ListUpdate()
+    {
+        // 중복 방지를 위해 기존 리스트를 초기화
+        _userEmails.Clear();
+        foreach (Player p in PhotonNetwork.PlayerList)
+        {
+            if (p.NickName != PhotonNetwork.NickName) // 자기 자신의 닉네임과 다를 경우만 추가
+                _userEmails.Add(p.NickName); // 이메일 대신 닉네임 추가
+        }
+        // UI 업데이트
         for (int i = 0; i < _userName.Length; i++)
         {
             if (i < _userEmails.Count)
             {
-                _userName[i].text = _userEmails[i]; // 이메일 리스트 출력
+                _userName[i].text = _userEmails[i]; // 유저 이메일/닉네임 출력
             }
             else
             {
-                _userName[i].text = ""; // 비어있는 칸 초기화
+                _userName[i].text = ""; // 남는 칸은 빈 문자열로 초기화
             }
         }
-    }
-    public void AddUser(string email)
-    {
-        if (!_userEmails.Contains(email)) // 중복 체크
-        {
-            _userEmails.Add(email);
-            CheckingUser(); // UI 갱신
-        }
-    }
-
-    // Photon 플레이어 입장 이벤트 처리
-    public override void OnPlayerEnteredRoom(Player newPlayer)
-    {
-        string _newPlayerEmail = newPlayer.NickName; // 예제: 닉네임 또는 이메일
-        AddUser(_newPlayerEmail); // 유저 추가 및 UI 갱신
     }
 }

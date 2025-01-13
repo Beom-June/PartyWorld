@@ -46,6 +46,17 @@ MonoBehaviour:
   - PlayerTurn
   - ChatRPC
   - Send
+  - UpdatePlayerReady
+  - SetPlayerReady
+  - CheckingUser
+  - AddUser
+  - OnPlayerEnteredRoom
+  - ForceUpdateUserList
+  - AddUserRPC
+  - ReceiveMsg
+  - RemoveUser
+  - ReceiveMessage
+  - ConnectMessage
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

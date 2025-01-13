@@ -231,7 +231,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &94758613
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -253,7 +253,7 @@ GameObject:
   - component: {fileID: 99221217}
   - component: {fileID: 99221219}
   m_Layer: 5
-  m_Name: Text_Chat02
+  m_Name: Text_Chat08
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -271,7 +271,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 1
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -351,7 +351,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 102171287}
-  - component: {fileID: 102171288}
+  - component: {fileID: 102171289}
   m_Layer: 0
   m_Name: Manager_Play
   m_TagString: Untagged
@@ -373,7 +373,7 @@ Transform:
   m_Father: {fileID: 1142712891}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &102171288
+--- !u!114 &102171289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -382,13 +382,15 @@ MonoBehaviour:
   m_GameObject: {fileID: 102171286}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7babe469dc0aa0b48be0c04800a1c528, type: 3}
+  m_Script: {fileID: 11500000, guid: 89727cdbcc2be73499a920931f4a8e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _mapScnene: []
   _sceneIdx: 
   _sceneName: 
-  _checking: {fileID: 1999599805}
-  _userId: 
+  _checkingPlayers: 
+  _playerCount: 0
+  _readyCount: 0
 --- !u!1 &107528419
 GameObject:
   m_ObjectHideFlags: 0
@@ -860,7 +862,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &210187644
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1065,7 +1067,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &242645829
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1117,7 +1119,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: 0.00016041636}
+  m_AnchoredPosition: {x: 0, y: 0.00003063907}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &268977116
@@ -1130,7 +1132,6 @@ GameObject:
   m_Component:
   - component: {fileID: 268977117}
   - component: {fileID: 268977118}
-  - component: {fileID: 268977119}
   m_Layer: 0
   m_Name: Manager_userList
   m_TagString: Untagged
@@ -1177,28 +1178,6 @@ MonoBehaviour:
   - {fileID: 304730858}
   - {fileID: 369209193}
   _userEmails: []
---- !u!114 &268977119
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 268977116}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: aa584fbee541324448dd18d8409c7a41, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ObservedComponentsFoldoutOpen: 1
-  Group: 0
-  prefixField: -1
-  Synchronization: 3
-  OwnershipTransfer: 0
-  observableSearch: 2
-  ObservedComponents: []
-  sceneViewId: 11
-  InstantiationId: 0
-  isRuntimeInstantiated: 0
 --- !u!1 &295030296
 GameObject:
   m_ObjectHideFlags: 0
@@ -1371,7 +1350,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &304730859
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1608,7 +1587,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &369209194
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1662,19 +1641,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _chatText:
-  - {fileID: 976426358}
-  - {fileID: 99221217}
-  - {fileID: 1202903042}
-  - {fileID: 567758910}
-  - {fileID: 295030298}
-  - {fileID: 1557564363}
-  - {fileID: 1314501104}
-  - {fileID: 1835628104}
   - {fileID: 1063055145}
+  - {fileID: 1835628104}
+  - {fileID: 1314501104}
+  - {fileID: 1557564363}
+  - {fileID: 295030298}
+  - {fileID: 567758910}
+  - {fileID: 1202903042}
+  - {fileID: 99221217}
+  - {fileID: 976426358}
   _chatInput: {fileID: 107528424}
-  _sendBtn: {fileID: 0}
+  _sendBtn: {fileID: 1543583116}
   StatusText: {fileID: 1946087557}
-  _pv: {fileID: 400717008}
   _textHide: {fileID: 503689635}
 --- !u!114 &400717008
 MonoBehaviour:
@@ -1691,7 +1669,7 @@ MonoBehaviour:
   ObservedComponentsFoldoutOpen: 1
   Group: 0
   prefixField: -1
-  Synchronization: 0
+  Synchronization: 1
   OwnershipTransfer: 0
   observableSearch: 2
   ObservedComponents: []
@@ -1768,7 +1746,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &483161714
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1962,7 +1940,7 @@ GameObject:
   - component: {fileID: 567758910}
   - component: {fileID: 567758912}
   m_Layer: 5
-  m_Name: Text_Chat04
+  m_Name: Text_Chat06
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1980,7 +1958,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -2133,8 +2111,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2076814565}
   m_HandleRect: {fileID: 2076814564}
   m_Direction: 2
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.9999927
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -2626,7 +2604,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &729455158
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2965,8 +2943,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 102171288}
-        m_TargetAssemblyTypeName: PlayManager, Assembly-CSharp
+      - m_Target: {fileID: 1530166913}
+        m_TargetAssemblyTypeName: UIPlay, Assembly-CSharp
         m_MethodName: NoButton
         m_Mode: 1
         m_Arguments:
@@ -3230,7 +3208,7 @@ GameObject:
   - component: {fileID: 976426358}
   - component: {fileID: 976426360}
   m_Layer: 5
-  m_Name: Text_Chat01
+  m_Name: Text_Chat09
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3248,7 +3226,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 0
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3530,7 +3508,7 @@ GameObject:
   - component: {fileID: 1063055145}
   - component: {fileID: 1063055147}
   m_Layer: 5
-  m_Name: Text_Chat09
+  m_Name: Text_Chat01
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3548,7 +3526,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 8
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -3937,9 +3915,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 102171288}
-        m_TargetAssemblyTypeName: PlayManager, Assembly-CSharp
-        m_MethodName: YesButton
+      - m_Target: {fileID: 1530166913}
+        m_TargetAssemblyTypeName: UIPlay, Assembly-CSharp
+        m_MethodName: PlayButton
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -4154,7 +4132,7 @@ GameObject:
   - component: {fileID: 1202903042}
   - component: {fileID: 1202903044}
   m_Layer: 5
-  m_Name: Text_Chat03
+  m_Name: Text_Chat07
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4172,7 +4150,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 2
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4332,7 +4310,7 @@ GameObject:
   - component: {fileID: 1314501104}
   - component: {fileID: 1314501106}
   m_Layer: 5
-  m_Name: Text_Chat07
+  m_Name: Text_Chat03
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4350,7 +4328,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 6
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -4748,7 +4726,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &1484137216
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4827,7 +4805,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &1519686043
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -4846,8 +4824,9 @@ GameObject:
   m_Component:
   - component: {fileID: 1530166911}
   - component: {fileID: 1530166912}
+  - component: {fileID: 1530166913}
   m_Layer: 0
-  m_Name: Manager_Loading
+  m_Name: Manager_UI
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4881,6 +4860,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _txtLoading: {fileID: 353002211}
   _loadingText: Loading....
+--- !u!114 &1530166913
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1530166910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7babe469dc0aa0b48be0c04800a1c528, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _checking: {fileID: 1999599805}
 --- !u!1 &1531708692
 GameObject:
   m_ObjectHideFlags: 0
@@ -5083,18 +5075,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 400717007}
-        m_TargetAssemblyTypeName: ChatManager, Assembly-CSharp
-        m_MethodName: HideTextObject
-        m_Mode: 6
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 1
-        m_CallState: 2
 --- !u!114 &1543583117
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5229,7 +5209,7 @@ GameObject:
   - component: {fileID: 1557564363}
   - component: {fileID: 1557564365}
   m_Layer: 5
-  m_Name: Text_Chat06
+  m_Name: Text_Chat04
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5247,7 +5227,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 5
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -5505,7 +5485,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &1573471143
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -5740,8 +5720,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 102171288}
-        m_TargetAssemblyTypeName: PlayManager, Assembly-CSharp
+      - m_Target: {fileID: 1530166913}
+        m_TargetAssemblyTypeName: UIPlay, Assembly-CSharp
         m_MethodName: PlayButton
         m_Mode: 1
         m_Arguments:
@@ -5810,7 +5790,7 @@ GameObject:
   - component: {fileID: 1835628104}
   - component: {fileID: 1835628106}
   m_Layer: 5
-  m_Name: Text_Chat08
+  m_Name: Text_Chat02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5828,7 +5808,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2103095697}
-  m_RootOrder: 7
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6485,7 +6465,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '-'
+  m_Text: 
 --- !u!222 &1973539747
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -6612,8 +6592,8 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 836129360}
   m_HandleRect: {fileID: 836129359}
   m_Direction: 0
-  m_Value: 1
-  m_Size: 1
+  m_Value: 0
+  m_Size: 0.99999994
   m_NumberOfSteps: 0
   m_OnValueChanged:
     m_PersistentCalls:
@@ -6758,21 +6738,21 @@ RectTransform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 976426357}
-  - {fileID: 99221216}
-  - {fileID: 1202903041}
-  - {fileID: 567758909}
-  - {fileID: 295030297}
-  - {fileID: 1557564362}
-  - {fileID: 1314501103}
-  - {fileID: 1835628103}
   - {fileID: 1063055144}
+  - {fileID: 1835628103}
+  - {fileID: 1314501103}
+  - {fileID: 1557564362}
+  - {fileID: 295030297}
+  - {fileID: 567758909}
+  - {fileID: 1202903041}
+  - {fileID: 99221216}
+  - {fileID: 976426357}
   m_Father: {fileID: 1083335392}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: 0, y: -0.000033084907}
+  m_AnchoredPosition: {x: 0, y: 0.00007286732}
   m_SizeDelta: {x: 0, y: 300}
   m_Pivot: {x: 0, y: 1}
 --- !u!1 &2107276477
@@ -6857,7 +6837,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1669059039}
   m_HandleRect: {fileID: 1669059038}
   m_Direction: 0
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:

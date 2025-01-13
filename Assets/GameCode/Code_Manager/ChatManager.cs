@@ -25,18 +25,17 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
     [Header("ETC")]
     [SerializeField] private Text StatusText;
-    [SerializeField] private PhotonView _pv;
     [SerializeField] private GameObject _textHide;
-
+    private PhotonView _pv;
 
     #region 서버연결
-    void Awake()
-    {
-        //=> Screen.SetResolution(960, 540, false);
-        PhotonNetwork.ConnectUsingSettings();
-    }
+
     private void Start()
     {
+        // 로그인한 이메일을 PhotonNetwork.NickName에 설정
+        PhotonNetwork.NickName = FirebaseAuthManager.Instance._userEmail;
+
+        PhotonNetwork.ConnectUsingSettings();
         PhotonNetwork.IsMessageQueueRunning = true;
 
         _sendBtn.onClick.AddListener(Send);
@@ -48,8 +47,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
         StatusText.text = PhotonNetwork.NetworkClientState.ToString();
         //LobbyInfoText.text = (PhotonNetwork.CountOfPlayers - PhotonNetwork.CountOfPlayersInRooms) + "로비 / " + PhotonNetwork.CountOfPlayers + "접속";
 
-        // 마우스 클릭 감지
-        if (Input.GetMouseButtonDown(0)) // 0은 왼쪽 버튼
+        if (Input.GetMouseButtonDown(0))
         {
             // UI가 아닌 다른 영역 클릭 시 활성화
             if (!EventSystem.current.IsPointerOverGameObject())
@@ -63,7 +61,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-    //=> PhotonNetwork.JoinLobby();
+        //=> PhotonNetwork.JoinLobby();
         //PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = 4 }, null);
         PhotonNetwork.JoinOrCreateRoom("Room1", new RoomOptions { MaxPlayers = 4 }, TypedLobby.Default);
     }
@@ -75,6 +73,7 @@ public class ChatManager : MonoBehaviourPunCallbacks
         //PhotonNetwork.LocalPlayer.NickName = NickNameInput.text;
         //WelcomeText.text = PhotonNetwork.LocalPlayer.NickName + "님 환영합니다";
         //myList.Clear();
+        //NotifyPlayerCount();
     }
 
     // 포톤 끊기면
@@ -90,30 +89,70 @@ public class ChatManager : MonoBehaviourPunCallbacks
     #region 디버그용 방 접속 확인
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        //RoomRenewal();
-        ChatRPC("<color=yellow>" + newPlayer.NickName + "님이 참가하셨습니다</color>");
+        //ChatRPC("<color=green>" + PhotonNetwork.NickName + "님이 참가하셨습니다</color>");
+        //string _newMessage = $"<color=green>{FirebaseAuthManager.Instance._userEmail}님이 참가하셨습니다</color>";
+        //photonView.RPC("ChatRPC", RpcTarget.All, _newMessage);
+
+        //SyncChatHistoryToNewPlayer(player);
+
+        string _msg = string.Format("<color=green>[{0}]님이 입장하셨습니다.</color>", newPlayer.NickName);
+        ConnectMessage(_msg);
     }
 
     public override void OnPlayerLeftRoom(Player otherPlayer)
     {
-        //RoomRenewal();
-        ChatRPC("<color=yellow>" + otherPlayer.NickName + "님이 퇴장하셨습니다</color>");
+        //ChatRPC("<color=red>" + PhotonNetwork.NickName + "님이 퇴장하셨습니다</color>");
+        //string _newMessage = $"<color=red>{FirebaseAuthManager.Instance._userEmail}님이 퇴장하셨습니다</color>";
+        //photonView.RPC("ChatRPC", RpcTarget.All, _newMessage);
+
+        string _msg = string.Format("<color=red>[{0}]님이 퇴장하셨습니다.</color>", otherPlayer.NickName);
+        ConnectMessage(_msg);
     }
-    //void RoomRenewal()
-    //{
-    //    ListText.text = "";
-    //    for (int i = 0; i < PhotonNetwork.PlayerList.Length; i++)
-    //        ListText.text += PhotonNetwork.PlayerList[i].NickName + ((i + 1 == PhotonNetwork.PlayerList.Length) ? "" : ", ");
-    //    RoomInfoText.text = PhotonNetwork.CurrentRoom.Name + " / " + PhotonNetwork.CurrentRoom.PlayerCount + "명 / " + PhotonNetwork.CurrentRoom.MaxPlayers + "최대";
-    //}
+
+    //  New Player에게 기존 채팅 내역 동기화
+    private void SyncChatHistoryToNewPlayer(Player Player)
+    {
+        foreach (var message in _chatText)
+        {
+            if (!string.IsNullOrEmpty(message.text))
+            {
+                photonView.RPC("ChatRPC", Player, message.text); // 새 플레이어에게 메시지 전송
+            }
+        }
+    }
+
+    private void NotifyPlayerCount()
+    {
+        if (PhotonNetwork.InRoom) // 방에 있는지 확인
+        {
+            int _currentPlayers = PhotonNetwork.CurrentRoom.PlayerCount;
+            string _message = $"현재 방에 {_currentPlayers}명이 접속 중입니다.";
+            _pv.RPC("ChatRPC", RpcTarget.All, $"<color=green>{_message}</color>");
+        }
+        else
+        {
+            Debug.LogWarning("방에 접속 중이 아닙니다. 플레이어 수를 알릴 수 없습니다.");
+        }
+    }
+
+    //  접속 알림
+    [PunRPC]
+    public void ConnectMessage(string msg)
+    {
+        // 메시지가 밀리는 로직
+        for (int i = 1; i < _chatText.Length; i++)
+        {
+            _chatText[i - 1].text = _chatText[i].text; // 이전 칸으로 이동
+            _chatText[i].text = msg;
+        }
+    }
+
     #endregion
 
     #region 채팅
-    //  SEND 버튼에 넣기
+    //  Send 버튼에 넣기
     public void Send()
     {
-        //_chatInput.text = "";
-
         string _message = _chatInput.text;
 
         if (!string.IsNullOrEmpty(_message)) // 입력 필드가 비어있는지 확인
@@ -121,8 +160,8 @@ public class ChatManager : MonoBehaviourPunCallbacks
             if (PhotonNetwork.InRoom) // 현재 방에 있는지 확인
             {
                 string _email = FirebaseAuthManager.Instance._userEmail;
-                _pv.RPC("ChatRPC", RpcTarget.All, _email + " : " + _message);
-                //_pv.RPC("ChatRPC", RpcTarget.All, PhotonNetwork.NickName + " : " + _chatInput.text);
+                string _formattedMessage = $"{_email}: {_message}";
+                _pv.RPC("ChatRPC", RpcTarget.All, _formattedMessage);
                 _chatInput.text = ""; // 입력 필드 초기화
             }
             else
@@ -136,48 +175,18 @@ public class ChatManager : MonoBehaviourPunCallbacks
         }
     }
 
-    // RPC는 플레이어가 속해있는 방 모든 인원에게 전달한다
     [PunRPC]
-    //void ChatRPC(string msg)
-    //{
-    //    Debug.Log($"Received message: {msg}"); // 디버그로 메시지 확인
-    //    bool _isInput = false;
-    //    for (int i = 0; i < _chatText.Length; i++)
-    //    {
-    //        if (_chatText[i].text == "")
-    //        {
-    //            _isInput = true;
-    //            _chatText[i].text = msg;
-    //            break;
-    //        }
-    //    }
-    //    if (!_isInput) // 꽉차면 한칸씩 위로 올림
-    //    {
-    //        for (int i = 1; i < _chatText.Length; i++)
-    //        {
-    //            _chatText[i - 1].text = _chatText[i].text;
-    //        }
-    //        _chatText[_chatText.Length - 1].text = msg;
-    //    }
-    //}
+    //  Send에서 선언중
     void ChatRPC(string msg)
     {
-        Debug.Log($"Received message: {msg}"); // 디버그로 메시지 확인
-        for (int i = 0; i < _chatText.Length; i++)
-        {
-            if (string.IsNullOrEmpty(_chatText[i].text))
-            {
-                _chatText[i].text = msg;
-                return;
-            }
-        }
+        Debug.Log($"Received message: {msg}");              // 디버그로 메시지 확인
 
         // 메시지 밀기
         for (int i = 1; i < _chatText.Length; i++)
         {
             _chatText[i - 1].text = _chatText[i].text;
+            _chatText[i].text = msg;
         }
-        _chatText[_chatText.Length - 1].text = msg;
     }
     #endregion
 
