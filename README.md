@@ -8,7 +8,9 @@
 - Photon, Addressable과 같은 기술을 공부하고 적용하기 위해 진행 중.  
 
 <b><h1>Lobby Scene</h1></b>
-![image](https://github.com/user-attachments/assets/6dcf5569-dd42-4197-a122-d4e72beed622)
+<div align="center">
+    <img src="https://github.com/user-attachments/assets/6dcf5569-dd42-4197-a122-d4e72beed622" alt="설명 이미지" width="600">
+</div>
 
 - UserList: 접속한 유저를 확인할 수 있는 목록.
 - 채팅 기능: Photon을 이용해 유저 간 채팅 기능을 구현.
