@@ -57,6 +57,10 @@ MonoBehaviour:
   - RemoveUser
   - ReceiveMessage
   - ConnectMessage
+  - PlayStart
+  - SetPlayerReadyState
+  - SetMyPlayerReady
+  - PlayerLoading
   DisableAutoOpenWizard: 1
   ShowSettings: 1
   DevRegionSetOnce: 1

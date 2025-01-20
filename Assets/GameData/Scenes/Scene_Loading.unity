@@ -694,7 +694,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 89727cdbcc2be73499a920931f4a8e09, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _checkingPlayers: 
   _mapScnene: []
+  _sceneIdx: 
+  _sceneName: 
+  _checkingPlayers: 
   _playerCount: 0
   _readyCount: 0
+  _isLoadingStarted: 0
+  _loading: 0
+  _loadingSpeed: 0.1
+  _loadingFinish: 100

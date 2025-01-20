@@ -1,21 +1,26 @@
+using Photon.Pun;
+using Photon.Realtime;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.SceneManagement;
-using Photon.Pun;
-using Photon.Realtime;
-using UnityEngine.EventSystems;
+using UnityEditor;
 
 public class PlayerCheckingManager : MonoBehaviourPunCallbacks
 {
     [SerializeField] private List<Scene> _mapScnene;
-    [SerializeField] private List<int> _sceneIdx;  // 씬 인덱스를 담는 리스트
-    [SerializeField] private string _sceneName;        // 현재 씬 이름
+    [SerializeField] private List<int> _sceneIdx;                           // 씬 인덱스를 담는 리스트
+    [SerializeField] private string _sceneName;                             // 현재 씬 이름
 
     [SerializeField] private List<bool> _checkingPlayers;
-    [SerializeField] private int _playerCount;                           // 방에 접속한 플레이어 수
-    [SerializeField] private int _readyCount;                            // 준비 완료한 플레이어 수
+    [SerializeField] private int _playerCount;                              // 방에 접속한 플레이어 수
+    [SerializeField] private int _readyCount;                               // 준비 완료한 플레이어 수
+
+    [Header("Setting Loading")]
+    [SerializeField] private bool _isLoadingStarted = false;
+    [SerializeField] private float _loading;
+    [SerializeField] private float _loadingSpeed = 0.001f;                     // 로딩 속도
+    [SerializeField] private float _loadingFinish = 100.0f;                    //  로딩 끝
     private void Awake()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -30,12 +35,20 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient)
         {
             _playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
-            _checkingPlayers = new List<bool>(new bool[_playerCount]);          // 플레이어 수만큼 리스트 초기화
+            //_checkingPlayers = new List<bool>(new bool[_playerCount]);          // 플레이어 수만큼 리스트 초기화
+            CheckingPlayersSize();
+
+            if (!_isLoadingStarted)
+            {
+                _isLoadingStarted = true; // 중복 실행 방지
+                StartCoroutine(PlayerLoading());
+            }
         }
         //  해당 씬으로 플레이어가 들어왔는지 체크
         if (PhotonNetwork.IsMasterClient && _readyCount == _playerCount)
         {
             //PlayStart(); // 모든 플레이어가 준비되면 게임 시작
+            GoToRandomScene();
         }
     }
     // 플레이어 준비 상태 갱신
@@ -46,6 +59,7 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
         photonView.RPC("UpdatePlayerReady", RpcTarget.All, _playerIdx, true);
     }
 
+    [PunRPC]
     //  로비에 있던 플레이어가 다 체크되면 다음 씬으로 넘어감
     private void PlayStart()
     {
@@ -56,6 +70,73 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
         {
             // 원하는 맵 씬 로드 (예: 첫 번째 맵)
             PhotonNetwork.LoadLevel("Scene_Map01");
+        }
+    }
+
+    [PunRPC]
+    // 로딩  코루틴
+    private IEnumerator PlayerLoading()
+    {
+        while (_loading < _loadingFinish)
+        {
+            _loading += _loadingSpeed; // 로딩 속도만큼 증가
+            //Debug.Log($"현재 로딩 상태: {_loading}%");
+
+            // 프레임마다 대기
+            yield return null; // 다음 프레임까지 대기
+        }
+
+        //Debug.Log("로딩 완료!");
+
+        // 자신의 준비 상태를 true로 설정
+        if (_loading >= _loadingFinish)
+        {
+            SetMyPlayerReady();
+
+        }
+    }
+    // _checkingPlayers 크기 조정 함수
+    private void CheckingPlayersSize()
+    {
+        if (_checkingPlayers == null)
+        {
+            _checkingPlayers = new List<bool>();
+        }
+
+        // 플레이어 수가 리스트 크기보다 크면 false 추가
+        while (_checkingPlayers.Count < _playerCount)
+        {
+            _checkingPlayers.Add(false);
+        }
+
+        // 플레이어 수가 리스트 크기보다 작으면 뒤에서부터 제거
+        while (_checkingPlayers.Count > _playerCount)
+        {
+            _checkingPlayers.RemoveAt(_checkingPlayers.Count - 1);
+        }
+
+        Debug.Log($"_checkingPlayers 상태: {string.Join(", ", _checkingPlayers)}");
+    }
+    [PunRPC]
+    // 자신의 준비 상태를 설정하는 메소드
+    private void SetMyPlayerReady()
+    {
+        if (_checkingPlayers == null || _checkingPlayers.Count == 0)
+        {
+            Debug.LogError("CheckingPlayers 리스트가 초기화되지 않았습니다!");
+            return;
+        }
+
+        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1; // 자신의 인덱스 계산
+        Debug.Log("&&&&&&" + playerIndex);
+        if (playerIndex >= 0 && playerIndex < _checkingPlayers.Count)
+        {
+            _checkingPlayers[playerIndex] = true; // 자신의 상태를 true로 설정
+            Debug.Log($"현재 CheckingPlayers 상태: {playerIndex} {string.Join(", ", _checkingPlayers)}");
+        }
+        else
+        {
+            Debug.LogError("유효하지 않은 플레이어 인덱스입니다!");
         }
     }
 
@@ -82,6 +163,8 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
         // 씬 이름을 콘솔에 출력
         Debug.Log(" Scene Name : " + _sceneName);
     }
+
+
     #region Photon 동기화 코드
     // 새로운 플레이어가 방에 들어왔을 때
     public override void OnPlayerEnteredRoom(Player newPlayer)

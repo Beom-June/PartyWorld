@@ -22,5 +22,4 @@ public class UIPlay : MonoBehaviour
     {
         _checking.SetActive(false);
     }
-
 }
