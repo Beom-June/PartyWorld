@@ -25,14 +25,10 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
     {
         PhotonNetwork.ConnectUsingSettings();
     }
-    void Start()
-    {
-        //SetPlayerReady();
-    }
 
     void Update()
     {
-        if (PhotonNetwork.IsMasterClient)
+        //if (PhotonNetwork.IsMasterClient)
         {
             _playerCount = PhotonNetwork.CurrentRoom.PlayerCount;
             //_checkingPlayers = new List<bool>(new bool[_playerCount]);          // 플레이어 수만큼 리스트 초기화
@@ -48,15 +44,15 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.IsMasterClient && _readyCount == _playerCount)
         {
             //PlayStart(); // 모든 플레이어가 준비되면 게임 시작
-            GoToRandomScene();
+            //GoToRandomScene();
+
+            Debug.Log("**********************");
         }
-    }
-    // 플레이어 준비 상태 갱신
-    [PunRPC]
-    private void SetPlayerReady()
-    {
-        int _playerIdx = PhotonNetwork.LocalPlayer.ActorNumber - 1; // Photon ActorNumber는 1부터 시작
-        photonView.RPC("UpdatePlayerReady", RpcTarget.All, _playerIdx, true);
+
+        if(_readyCount == _playerCount)
+        {
+            Debug.Log("testestestesetest");
+        }
     }
 
     [PunRPC]
@@ -83,16 +79,13 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
             //Debug.Log($"현재 로딩 상태: {_loading}%");
 
             // 프레임마다 대기
-            yield return null; // 다음 프레임까지 대기
+            yield return null; 
         }
-
-        //Debug.Log("로딩 완료!");
 
         // 자신의 준비 상태를 true로 설정
         if (_loading >= _loadingFinish)
         {
             SetMyPlayerReady();
-
         }
     }
     // _checkingPlayers 크기 조정 함수
@@ -114,7 +107,6 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
         {
             _checkingPlayers.RemoveAt(_checkingPlayers.Count - 1);
         }
-
         Debug.Log($"_checkingPlayers 상태: {string.Join(", ", _checkingPlayers)}");
     }
     [PunRPC]
@@ -127,12 +119,14 @@ public class PlayerCheckingManager : MonoBehaviourPunCallbacks
             return;
         }
 
-        int playerIndex = PhotonNetwork.LocalPlayer.ActorNumber - 1; // 자신의 인덱스 계산
-        Debug.Log("&&&&&&" + playerIndex);
-        if (playerIndex >= 0 && playerIndex < _checkingPlayers.Count)
+        int _playerIdx = PhotonNetwork.LocalPlayer.ActorNumber - 1; // 자신의 인덱스 계산
+        if (_playerIdx >= 0 && _playerIdx < _checkingPlayers.Count)
         {
-            _checkingPlayers[playerIndex] = true; // 자신의 상태를 true로 설정
-            Debug.Log($"현재 CheckingPlayers 상태: {playerIndex} {string.Join(", ", _checkingPlayers)}");
+            _checkingPlayers[_playerIdx] = true; // 자신의 상태를 true로 설정
+            Debug.Log($"SetMyPlayerReady called by {PhotonNetwork.LocalPlayer.NickName}");
+            Debug.Log($"현재 CheckingPlayers 상태: {_playerIdx} {string.Join(", ", _checkingPlayers)}");
+
+            _readyCount++;
         }
         else
         {
